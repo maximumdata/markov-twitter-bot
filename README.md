@@ -9,7 +9,7 @@ You will need an active Twitter account for your bot, and you will also need to 
 ### Usage
 
 ```
-const TwitterBot = require('../markov-twitter-bot')
+const TwitterBot = require('markov-twitter-bot')
 
 const options = {
   account: 'SomeTwitterHandle',
