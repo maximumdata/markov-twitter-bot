@@ -1,0 +1,24 @@
+{
+  "name": "markov-twitter-bot",
+  "version": "0.0.1",
+  "description": "A shell for creating a twitter bot that generates tweets using markov chains",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maximumdata/markov-twitter-bot.git"
+  },
+  "keywords": [
+    "twitter",
+    "bot",
+    "markov"
+  ],
+  "author": "Mike Dettmer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maximumdata/markov-twitter-bot/issues"
+  },
+  "homepage": "https://github.com/maximumdata/markov-twitter-bot#readme"
+}
