@@ -22,7 +22,7 @@ const options = {
 }
 // You can leave the twitter object out if you have environments variables set. (see below)
 
-const bot = new TwitterBot({ options })
+const bot = new TwitterBot( options )
 
 ```
 That's all you need to have a bot generate tweets from `SomeTwitterHandle` every 4 hours, while updating the available tweets every hour at 55 minutes past the hour.
