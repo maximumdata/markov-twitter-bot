@@ -6,6 +6,7 @@ const schedule = require('node-schedule')
 class TwitterBot {
 
   constructor (options) {
+    this.arrayOfTweets = []
     this.options = {
       hour: 4,
       minute: 0,
@@ -29,8 +30,7 @@ class TwitterBot {
     this.getTweets((tweets) => {
       this.arrayOfTweets = tweets
       this.setTimedFunctions()
-      console.log(this.generateTweet())
-      // this.postTweet()
+      console.log('Retrieved tweets and set timed functions')
     })
   }
 
@@ -84,7 +84,9 @@ class TwitterBot {
       this.twitterClient.get('statuses/user_timeline', {screen_name: this.options.account, max_id: max_id, count: 200, exclude_replies: true, include_rts: false}, (error, timeline, response) => {
         if (error) throw new Error(error[0].message)
         timeline.forEach((e, i, a) => {
-          arrayOfTweets.push(e.text)
+          if (!this.arrayOfTweets.includes(e.text)) {
+            arrayOfTweets.push(e.text)
+          }
           if (i === a.length - 1) {
             lastID = e.id
           }
