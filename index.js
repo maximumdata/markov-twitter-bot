@@ -1,14 +1,15 @@
 const Twitter = require('twitter')
 const MarkovGen = require('markov-generator')
 const tipots = require('this-is-probably-ok-to-say')
+const schedule = require('node-schedule')
 
 class TwitterBot {
 
   constructor (options) {
     this.options = {
-      frequency: 'hourly',
-      interval: 4,
-      account: 'haunted_shrub',
+      hour: 4,
+      minute: 0,
+      account: '',
       db: null,
       twitter: {
         consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -20,10 +21,16 @@ class TwitterBot {
 
     Object.assign(this.options, options)
 
+    if (!this.options.account) {
+      throw new Error('No twitter account handle was assigned in options')
+    }
+
     this.twitterClient = this.createTwitterClient()
     this.getTweets((tweets) => {
       this.arrayOfTweets = tweets
+      this.setTimedFunctions()
       console.log(this.generateTweet())
+      // this.postTweet()
     })
   }
 
@@ -94,7 +101,7 @@ class TwitterBot {
     get()
   }
 
-  generateTweet () {
+  generateTweet (callback) {
     let markov = new MarkovGen({
       input: this.arrayOfTweets,
       minLength: 10
@@ -105,7 +112,41 @@ class TwitterBot {
       tweet = markov.makeChain()
     }
 
+    if (callback) { return callback(tweet) }
+
     return tweet
+  }
+
+  postTweet (callback) {
+    this.generateTweet((tweet) => {
+      this.twitterClient.post('statuses/update', {status: tweet}, function (error, postedTweet, response) {
+        if (error) throw error
+        if (callback) {
+          callback()
+        } else {
+          console.log(postedTweet)
+        }
+      })
+    })
+  }
+
+  setTimedFunctions () {
+    let updateRule = new schedule.RecurrenceRule()
+    updateRule.minute = 55
+
+    schedule.scheduleJob(updateRule, () => {
+      this.getTweets()
+      console.log('updated tweets at ' + Date.now())
+    })
+
+    let postRule = new schedule.RecurrenceRule()
+
+    postRule.hour = this.options.hour
+    postRule.minute = this.options.minute
+
+    schedule.scheduleJob(postRule, function () {
+      this.postTweet()
+    })
   }
 }
 
