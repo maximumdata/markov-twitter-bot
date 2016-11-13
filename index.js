@@ -137,8 +137,9 @@ class TwitterBot {
     updateRule.minute = 55
 
     schedule.scheduleJob(updateRule, () => {
-      this.getTweets()
-      console.log('updated tweets at ' + Date.now())
+      this.getTweets((array) => {
+        console.log('updated tweets at ' + Date.now())
+      })
     })
 
     let postRule = new schedule.RecurrenceRule()
