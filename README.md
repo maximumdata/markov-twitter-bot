@@ -20,7 +20,7 @@ const options = {
     access_token_secret: 'ACCESSSECRETFROMTWITTER'
   }
 }
-// You can leave the twitter object out if you have environments variables set. (see below)
+// You can leave the twitter object out if you have environment variables set. (see below)
 
 const bot = new TwitterBot( options )
 
