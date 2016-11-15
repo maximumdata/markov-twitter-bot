@@ -156,7 +156,7 @@ class TwitterBot {
     })
 
     let cronString = this.options.minute + ' */' + this.options.hour + ' * * *'
-    schedule.scheduleJob(cronString, function () {
+    schedule.scheduleJob(cronString, () => {
       this.postTweet()
     })
   }
