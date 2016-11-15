@@ -27,8 +27,8 @@ class TwitterBot {
     }
 
     this.twitterClient = this.createTwitterClient()
-    this.getTweets((tweets) => {
-      this.arrayOfTweets = tweets
+
+    this.getTweets(() => {
       this.setTimedFunctions()
       console.log('Retrieved tweets and set timed functions')
     })
@@ -76,8 +76,11 @@ class TwitterBot {
     }
   }
 
+  writeTweetsToFile (arrayOfTweets) {
+
+  }
+
   getTweets (cb) {
-    let arrayOfTweets = []
     let lastID
     let count = 0
     let get = (max_id) => {
@@ -85,7 +88,7 @@ class TwitterBot {
         if (error) throw new Error(error[0].message)
         timeline.forEach((e, i, a) => {
           if (!this.arrayOfTweets.includes(e.text)) {
-            arrayOfTweets.push(e.text)
+            this.arrayOfTweets.push(e.text)
           }
           if (i === a.length - 1) {
             lastID = e.id
@@ -96,7 +99,7 @@ class TwitterBot {
           get(lastID)
         }
         if (count === 16) {
-          cb(arrayOfTweets)
+          cb(this.arrayOfTweets)
         }
       })
     }
@@ -104,6 +107,10 @@ class TwitterBot {
   }
 
   generateTweet (callback) {
+    if (!this.arrayOfTweets.length) {
+      throw new Error('arrayOfTweets was empty!')
+    }
+
     let markov = new MarkovGen({
       input: this.arrayOfTweets,
       minLength: 6
@@ -120,14 +127,19 @@ class TwitterBot {
   }
 
   postTweet (callback) {
-    this.generateTweet((tweet) => {
-      this.twitterClient.post('statuses/update', {status: tweet}, function (error, postedTweet, response) {
-        if (error) throw error
-        if (callback) {
-          callback()
-        } else {
-          console.log(postedTweet)
-        }
+    this.getTweets(() => {
+      this.generateTweet((tweet) => {
+        this.twitterClient.post('statuses/update', {status: tweet}, function (error, postedTweet, response) {
+          if (error) {
+            console.log(error)
+            throw error
+          }
+          if (callback) {
+            callback()
+          } else {
+            console.log(postedTweet)
+          }
+        })
       })
     })
   }
