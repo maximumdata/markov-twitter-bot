@@ -106,7 +106,7 @@ class TwitterBot {
   generateTweet (callback) {
     let markov = new MarkovGen({
       input: this.arrayOfTweets,
-      minLength: 10
+      minLength: 6
     })
 
     let tweet = markov.makeChain()
@@ -134,6 +134,7 @@ class TwitterBot {
 
   setTimedFunctions () {
     let updateRule = new schedule.RecurrenceRule()
+    updateRule.hour = 1
     updateRule.minute = 55
 
     schedule.scheduleJob(updateRule, () => {
@@ -142,12 +143,8 @@ class TwitterBot {
       })
     })
 
-    let postRule = new schedule.RecurrenceRule()
-
-    postRule.hour = this.options.hour
-    postRule.minute = this.options.minute
-
-    schedule.scheduleJob(postRule, function () {
+    let cronString = this.options.minute + ' */' + this.options.hour + ' * * *'
+    schedule.scheduleJob(cronString, function () {
       this.postTweet()
     })
   }
