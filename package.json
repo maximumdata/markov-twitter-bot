@@ -1,6 +1,6 @@
 {
   "name": "markov-twitter-bot",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A shell for creating a twitter bot that generates tweets using markov chains",
   "main": "index.js",
   "scripts": {

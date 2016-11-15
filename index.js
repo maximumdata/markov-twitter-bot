@@ -136,8 +136,6 @@ class TwitterBot {
           }
           if (callback) {
             callback()
-          } else {
-            console.log(postedTweet)
           }
         })
       })
