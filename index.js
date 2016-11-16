@@ -117,7 +117,8 @@ class TwitterBot {
     })
 
     let tweet = markov.makeChain()
-    while (tweet.length > 140 && (!tipots(tweet))) {
+
+    while (tweet.length > 140 || !tipots(tweet)) {
       tweet = markov.makeChain()
     }
 
