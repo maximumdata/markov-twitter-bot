@@ -80,7 +80,6 @@ class TwitterBot {
   checkForBannedWords (tweet) {
     let lower = tweet.toLowerCase()
     this.bannedWords.forEach((e) => {
-
       if (lower.includes(e.toLowerCase)) {
         return true
       }
