@@ -20,7 +20,8 @@ class TwitterBot {
       },
       bannedWords: [],
       includeAts: true,
-      includeHashtags: true
+      includeHashtags: true,
+      replyTo: ''
     }
 
     Object.assign(this.options, options)
@@ -34,6 +35,10 @@ class TwitterBot {
     this.getTweets(() => {
       this.setTimedFunctions()
       console.log('Retrieved tweets and set timed functions')
+      if (this.options.replyTo) {
+        this.setReplyFunction()
+        console.log('Also set reply function watcher')
+      }
     })
   }
 
@@ -152,6 +157,27 @@ class TwitterBot {
     return tweet
   }
 
+  generateReply (replyToUser, callback) {
+    if (!this.arrayOfTweets.length) {
+      throw new Error('arrayOfTweets was empty!')
+    }
+
+    let markov = new MarkovGen({
+      input: this.arrayOfTweets,
+      minLength: 4
+    })
+
+    let tweet = markov.makeChain()
+    let replyString = '@' + replyToUser + ' '
+    let length = 140 - replyString.length
+
+    while (tweet.length > length || !tipots(tweet) || this.checkForBannedWords(tweet) || this.checkForHashtags(tweet) || this.checkForAts(tweet)) {
+      tweet = markov.makeChain()
+    }
+    if (callback) { return callback(replyString + tweet) }
+    return replyString + tweet
+  }
+
   postTweet (callback) {
     this.getTweets(() => {
       this.generateTweet((tweet) => {
@@ -182,6 +208,20 @@ class TwitterBot {
     let cronString = this.options.minute + ' */' + this.options.hour + ' * * *'
     schedule.scheduleJob(cronString, () => {
       this.postTweet()
+    })
+  }
+
+  setReplyFunction () {
+    this.twitterClient.stream('statuses/filter', {track: '@' + this.options.replyTo}, (stream) => {
+      stream.on('data', (tweet) => {
+        this.getTweets(() => {
+          this.generateReply(tweet.user.screen_name, (replyTweet) => {
+            this.twitterClient.post('statuses/update', { status: replyTweet, in_reply_to_status_id: tweet.id_str }, (err, postedReply, res) => {
+              if (err) throw err
+            })
+          })
+        })
+      })
     })
   }
 }

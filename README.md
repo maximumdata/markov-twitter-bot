@@ -18,7 +18,8 @@ const options = {
     consumer_secret: 'CONSUMERSECRETFROMTWITTER',
     access_token_key: 'ACCESSKEYFROMTWITTER',
     access_token_secret: 'ACCESSSECRETFROMTWITTER'
-  }
+  },
+  replyTo: 'MyBotAccountName'
 }
 // You can leave the twitter object out if you have environment variables set. (see below)
 
@@ -43,7 +44,8 @@ A full options object with it's defaults is as follows:
   },
   bannedWords: [],
   includeAts: true,
-  includeHashtags: true
+  includeHashtags: true,
+  replyTo: ''
 }
 ```
 #### options.hour
@@ -92,3 +94,8 @@ Set this to false to exclude any tweets containing `@username`s. Defaults to tru
 *Boolean -- optional*
 
 Set this to false to exclude any tweets containing hashtags. Defaults to true.
+
+#### options.replyTo
+*String -- optional*
+
+If you supply an account name to this value, the bot will reply to any tweets sent to that account. Enter your bot account's handle (**without the @**) to have it reply when it is mentioned. Defaults to `''`, disabling this functionality.
