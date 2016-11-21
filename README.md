@@ -18,8 +18,7 @@ const options = {
     consumer_secret: 'CONSUMERSECRETFROMTWITTER',
     access_token_key: 'ACCESSKEYFROMTWITTER',
     access_token_secret: 'ACCESSSECRETFROMTWITTER'
-  },
-  bannedWords: ['Orange', 'blue']
+  }
 }
 // You can leave the twitter object out if you have environment variables set. (see below)
 
@@ -42,7 +41,9 @@ A full options object with it's defaults is as follows:
     access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
     access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
   },
-  bannedWords: []
+  bannedWords: [],
+  includeAts: true,
+  includeHashtags: true
 }
 ```
 #### options.hour
@@ -81,3 +82,13 @@ This is an object that contains four properties: `consumer_key`, `consumer_secre
 *Array -- optional*
 
 An array of strings that you do not want to allow in the generated tweets. This package already uses [this-is-probably-ok-to-say](https://www.npmjs.com/package/this-is-probably-ok-to-say), but you can choose to filter out certain other words as well (i.e. a bot I created for a friend generated tweets containing the @ handle of their ex). Entered words will be case-insensitive, so `'TEST'` will match `'test'`, etc.
+
+#### options.includeAts
+*Boolean -- optional*
+
+Set this to false to exclude any tweets containing `@username`s. Defaults to true.
+
+#### options.includeHashtags
+*Boolean -- optional*
+
+Set this to false to exclude any tweets containing hashtags. Defaults to true.

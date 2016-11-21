@@ -18,7 +18,9 @@ class TwitterBot {
         access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
         access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
       },
-      bannedWords: []
+      bannedWords: [],
+      includeAts: true,
+      includeHashtags: true
     }
 
     Object.assign(this.options, options)
@@ -71,7 +73,7 @@ class TwitterBot {
     // otherwise return an error
     } else {
       if (missingKey) {
-        throw new Error('Missing twitter api key: ' + missingKey)
+        throw new Error('Missing twitter API key: ' + missingKey)
       }
       throw new Error('Missing twitter API keys!')
     }
@@ -85,6 +87,22 @@ class TwitterBot {
       }
     })
     return false
+  }
+
+  checkForAts (tweet) {
+    if (!this.options.includeAts) {
+      return tweet.includes('@')
+    } else {
+      return false
+    }
+  }
+
+  checkForHashtags (tweet) {
+    if (!this.options.includeHashtags) {
+      return tweet.includes('#')
+    } else {
+      return false
+    }
   }
 
   getTweets (cb) {
@@ -125,7 +143,7 @@ class TwitterBot {
 
     let tweet = markov.makeChain()
 
-    while (tweet.length > 140 || !tipots(tweet) || this.checkForBannedWords(tweet)) {
+    while (tweet.length > 140 || !tipots(tweet) || this.checkForBannedWords(tweet) || this.checkForAts(tweet) || this.checkForHashtags(tweet)) {
       tweet = markov.makeChain()
     }
 
