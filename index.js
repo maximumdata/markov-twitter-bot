@@ -17,7 +17,8 @@ class TwitterBot {
         consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
         access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
         access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
-      }
+      },
+      bannedWords: []
     }
 
     Object.assign(this.options, options)
@@ -76,8 +77,15 @@ class TwitterBot {
     }
   }
 
-  writeTweetsToFile (arrayOfTweets) {
+  checkForBannedWords (tweet) {
+    let lower = tweet.toLowerCase()
+    this.bannedWords.forEach((e) => {
 
+      if (lower.includes(e.toLowerCase)) {
+        return true
+      }
+    })
+    return false
   }
 
   getTweets (cb) {
@@ -118,7 +126,7 @@ class TwitterBot {
 
     let tweet = markov.makeChain()
 
-    while (tweet.length > 140 || !tipots(tweet)) {
+    while (tweet.length > 140 || !tipots(tweet) || this.checkForBannedWords(tweet)) {
       tweet = markov.makeChain()
     }
 
