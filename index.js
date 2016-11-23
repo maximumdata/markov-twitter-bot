@@ -129,7 +129,8 @@ class TwitterBot {
           get(lastID)
         }
         if (count === 16) {
-          cb(this.arrayOfTweets)
+          if (cb) { return cb(this.arrayOfTweets) }
+          else { return this.arrayOfTweets }
         }
       })
     }
@@ -138,7 +139,8 @@ class TwitterBot {
 
   generateTweet (callback) {
     if (!this.arrayOfTweets.length) {
-      throw new Error('arrayOfTweets was empty!')
+      console.log('arrayOfTweets was empty!')
+      this.getTweets()
     }
 
     let markov = new MarkovGen({
@@ -159,7 +161,8 @@ class TwitterBot {
 
   generateReply (replyToUser, callback) {
     if (!this.arrayOfTweets.length) {
-      throw new Error('arrayOfTweets was empty!')
+      console.log('arrayOfTweets was empty!')
+      this.getTweets()
     }
 
     let markov = new MarkovGen({
@@ -179,17 +182,15 @@ class TwitterBot {
   }
 
   postTweet (callback) {
-    this.getTweets(() => {
-      this.generateTweet((tweet) => {
-        this.twitterClient.post('statuses/update', {status: tweet}, function (error, postedTweet, response) {
-          if (error) {
-            console.log(error)
-            throw error
-          }
-          if (callback) {
-            callback()
-          }
-        })
+    this.generateTweet((tweet) => {
+      this.twitterClient.post('statuses/update', {status: tweet}, function (error, postedTweet, response) {
+        if (error) {
+          console.log(error)
+          throw error
+        }
+        if (callback) {
+          callback()
+        }
       })
     })
   }
@@ -199,8 +200,9 @@ class TwitterBot {
     updateRule.hour = 1
     updateRule.minute = 55
 
-    schedule.scheduleJob(updateRule, () => {
+    schedule.scheduleJob('50 */1 * * *', () => {
       this.getTweets((array) => {
+        this.arrayOfTweets = array
         console.log('updated tweets at ' + Date.now())
       })
     })
@@ -214,11 +216,10 @@ class TwitterBot {
   setReplyFunction () {
     this.twitterClient.stream('statuses/filter', {track: '@' + this.options.replyTo}, (stream) => {
       stream.on('data', (tweet) => {
-        this.getTweets(() => {
-          this.generateReply(tweet.user.screen_name, (replyTweet) => {
-            this.twitterClient.post('statuses/update', { status: replyTweet, in_reply_to_status_id: tweet.id_str }, (err, postedReply, res) => {
-              if (err) throw err
-            })
+        this.generateReply(tweet.user.screen_name, (replyTweet) => {
+          this.twitterClient.post('statuses/update', { status: replyTweet, in_reply_to_status_id: tweet.id_str }, (err, postedReply, res) => {
+            if (err) throw err
+            console.log(res)
           })
         })
       })

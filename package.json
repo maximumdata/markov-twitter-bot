@@ -1,6 +1,6 @@
 {
   "name": "markov-twitter-bot",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "A shell for creating a twitter bot that generates tweets using markov chains",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,6 @@
   "homepage": "https://github.com/maximumdata/markov-twitter-bot#readme",
   "dependencies": {
     "markov-generator": "^1.0.8",
-    "mongoose": "^4.6.7",
     "node-schedule": "^1.2.0",
     "this-is-probably-ok-to-say": "^1.0.100",
     "twitter": "^1.4.0"

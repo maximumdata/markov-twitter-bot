@@ -35,7 +35,6 @@ A full options object with it's defaults is as follows:
   hour: 4,
   minute: 0,
   account: '',
-  db: null,
   twitter: {
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -62,10 +61,6 @@ This is the interval of minutes to post a new tweet. Use this if you want to sta
 *String -- **required***
 
 This is the account to pull tweets from. Make sure to not include the @ in the string.
-
-#### options.db
-~~*Mongoose.connection object -- not implemented*~~
-This is an upcoming feature that will switch the logic to pull tweets from a MongoDB database when generating a tweet. **NYI**
 
 #### options.twitter
 *Object -- **required***
