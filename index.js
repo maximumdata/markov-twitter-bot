@@ -120,7 +120,7 @@ class TwitterBot {
         timeline.forEach((e, i, a) => {
           const tweetText = unescape(e.text)
           if (!this.arrayOfTweets.includes(tweetText)) {
-            this.arrayOfTweets.push(unescape(tweetText))
+            this.arrayOfTweets.push(tweetText)
           }
           if (i === a.length - 1) {
             lastID = e.id
