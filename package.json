@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/maximumdata/markov-twitter-bot#readme",
   "dependencies": {
+    "lodash.unescape": "^4.0.1",
     "markov-generator": "^1.0.8",
     "node-schedule": "^1.2.0",
     "this-is-probably-ok-to-say": "^1.0.100",

@@ -2,6 +2,7 @@ const Twitter = require('twitter')
 const MarkovGen = require('markov-generator')
 const tipots = require('this-is-probably-ok-to-say')
 const schedule = require('node-schedule')
+const unescape = require('lodash.unescape')
 
 class TwitterBot {
 
@@ -117,8 +118,9 @@ class TwitterBot {
       this.twitterClient.get('statuses/user_timeline', {screen_name: this.options.account, max_id: max_id, count: 200, exclude_replies: true, include_rts: false}, (error, timeline, response) => {
         if (error) throw new Error(error[0].message)
         timeline.forEach((e, i, a) => {
-          if (!this.arrayOfTweets.includes(e.text)) {
-            this.arrayOfTweets.push(e.text)
+          const tweetText = unescape(e.text)
+          if (!this.arrayOfTweets.includes(tweetText)) {
+            this.arrayOfTweets.push(tweetText)
           }
           if (i === a.length - 1) {
             lastID = e.id
